@@ -1,44 +1,30 @@
-// app.js
-const constants = require('./config/constants.js');
-const mysql = require('mysql2');
 
-const express = require('express');
+const RESPONSE_CODES = require('./config/constants.js');
+const {connectMongoDB} = require('./connection.js');
+const {logReqRes} = require('./middlewares');
+const mongoose = require('mongoose');
+const emailValidator = require('emailvalid');
+const EmailValidation = new emailValidator();
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
-const connection = mysql.createConnection({
-  host: '127.0.0.1',
-  user: 'Tushar_Riyat',
-  password: 'Tushar@0311',
-  database: 'sr_lifestyle_clinic',
+//Connecting Mongoose
+connectMongoDB('mongodb://127.0.0.1:27017/MedEnrollHubDB');
+
+async function isEmailValid(email){
+  console.log(email);
+  return emailValidator.validate(email);
+}
+
+//Middleware - Plugin
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(logReqRes('log.txt'));
+
+app.get('/usersList/:userID', (req, res) => {
+  const userID = Number(req.params.userID);
+  const user = usersData.find((user) => user.id === userID);
+  return res.json(user);
 });
 
-connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to the database:', err);
-    return;
-  }
-  console.log('Connected to the MySQL database');
-    
-  // Now you can perform database queries or start your application logic here
-  
-  // Example: Perform a simple query
-  connection.query('SELECT * FROM users', (queryError, results) => {
-    if (queryError) {
-      console.error('Error executing query:', queryError);
-      return;
-    }
-    console.log('Query results:', results);
-  });
-
-  // Close the connection when done
-  connection.end();
-});
-app.get('/urlBase', (req, res) => {
-  res.send(`constants : ${constants.RESPONSE_CODES.OK}`);
-  console.log('test get api');
-});
-
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}/urlBase`);
-});
+app.listen(PORT, () => console.log('Server Started'));

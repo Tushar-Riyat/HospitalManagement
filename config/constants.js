@@ -2,7 +2,7 @@ const constants = {
     RESPONSE_CODES : {
         OK                  : 200, // The request was successfully completed.
         CREATED 			: 201, // A new resource was successfully created.
-		OK_AND_COMPLETED 	: 202, // The request was successful and detailed are completed
+		OK_AND_ACCEPTED 	: 202, // The request was successful and detailed are completed
 		OK_WITH_CONFLICT 	: 203, // The request was successful but with some conflict
 		PROMPT_CODE 		: 204, // The request was successful but with prompt
 		SEE_OTHER 		    : 303, // This can be the URI of a temporary status message, or the URI to some already existing, more permanent, resource.
@@ -21,4 +21,4 @@ const constants = {
     },
 };
 
-module.exports = constants;
+module.exports = constants.RESPONSE_CODES;
