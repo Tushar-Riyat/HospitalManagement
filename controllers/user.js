@@ -1,6 +1,12 @@
 const User = require('../models/user');
-const RESPONSE_CODES = require('../config/constants.js')
+const emailValidator = require('emailvalid');
+const EmailValidation = new emailValidator();
+const RESPONSE_CODES = require('../config/constants.js');
 
+async function isEmailValid(email) {
+    console.log(email);
+    return emailValidator.validate(email);
+}
 
 async function handleGetAllUsers(req, res) {
     const allDbUsers = await User.find({});
@@ -33,24 +39,42 @@ async function handleRegisterUser(req, res) {
 }
 
 async function handleGetUserById(req, res) {
-    const user = await User.findById(req.params.id);
-    res.json({ user });
+    try{
+        if(!req.body.id){
+        return res.status(RESPONSE_CODES.PRECONDITION_FAILED).json({msg : 'missing argument(s). Please provide the ID.', err : err});
+        }
+        const user = await User.findById(req.body.id);
+        return res.json({user});
+    } catch (err) {
+        return res.status(RESPONSE_CODES.NOT_FOUND).json({msg : 'User not found.', err : err});
+    }
 }
 
 async function handleUpdateUserById(req, res) {
-    const user = await User.findByIdAndUpdate(req.params.id, { lastName: "Changed" });
-    return res
+    try{
+        const user = await User.findByIdAndUpdate(req.body.id, { lastName: "Changed" });
+        return res
         .status(RESPONSE_CODES.OK)
         .json({ msg: "User updated successfully", user: user })
+    } catch (err) {
+        return res.status(RESPONSE_CODES.INTERNAL_SERVER_ERROR).json({err : err});
+
+    }
 }
 
 async function handleDeleteUserById(req, res) {
-    const user = await User.findByIdAndDelete(req.params.id);
-    res.status(RESPONSE_CODES.OK).json({ user: user });
+    try{
+        const user = await User.findByIdAndDelete(req.body.id);
+        if (!user) return res.status(RESPONSE_CODES.NOT_FOUND).json({ msg: 'User wasn\'t found.' });
+        return res.json({msg : "User was removed successfully."})
+    } catch (err) {
+        return res.status(RESPONSE_CODES.INTERNAL_SERVER_ERROR).json({error : err.error});
+    }
 }
 
 
 module.exports = {
+    handleRegisterUser,
     handleGetAllUsers,
     handleGetUserById,
     handleUpdateUserById,

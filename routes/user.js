@@ -1,19 +1,19 @@
 const express = require('express');
-const RESPONSE_CODES = require('../config/constants.js');
-const {handleGetAllUsers, 
-    handleGetUserById, 
-    handleUpdateUserById, 
+const router = express.Router();
+const {handleGetAllUsers,
+    handleGetUserById,
+    handleRegisterUser,
+    handleUpdateUserById,
     handleDeleteUserById} = require('../controllers/user.js');
 const User = require('../models/user');
-const router = express.Router();
 
 router
-.get('/api/usersList', handleGetAllUsers(req, res));
+.get('/list', handleGetAllUsers);
 
-router
-    .route('/:id')
-    .get(handleGetUserById)
-    .patch(handleUpdateUserById)
+router.get('/:id',handleGetUserById);
+router.route('/').patch(handleUpdateUserById)
     .delete(handleDeleteUserById);
 
-router.post('/api/userRegisteration', );
+router.post('/register', handleRegisterUser);
+
+module.exports = router;

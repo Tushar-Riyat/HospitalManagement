@@ -1,30 +1,16 @@
-
-const RESPONSE_CODES = require('./config/constants.js');
+const express = require('express');
+const app = express();
 const {connectMongoDB} = require('./connection.js');
 const {logReqRes} = require('./middlewares');
-const mongoose = require('mongoose');
-const emailValidator = require('emailvalid');
-const EmailValidation = new emailValidator();
-const app = express();
+const userRouter = require('./routes/user.js');
 const PORT = 3000;
+const MONGODB_PORT = 27017;
 
 //Connecting Mongoose
-connectMongoDB('mongodb://127.0.0.1:27017/MedEnrollHubDB');
-
-async function isEmailValid(email){
-  console.log(email);
-  return emailValidator.validate(email);
-}
-
-//Middleware - Plugin
+connectMongoDB(`mongodb://127.0.0.1:${MONGODB_PORT}/MedEnrollHubDB`);
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(logReqRes('log.txt'));
 
-app.get('/usersList/:userID', (req, res) => {
-  const userID = Number(req.params.userID);
-  const user = usersData.find((user) => user.id === userID);
-  return res.json(user);
-});
-
+//Middlewares
+app.use(logReqRes('logs/log.txt'));
+app.use("/api/user", userRouter);
 app.listen(PORT, () => console.log('Server Started'));
