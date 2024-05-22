@@ -23,6 +23,11 @@ app.set('views', path.resolve('./views'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// Rendering home route
+app.get("/home", (req, res) => {
+    res.render('home');
+});
+
 // Custom middleware
 app.use(logReqRes('logs/log.txt'));
 
