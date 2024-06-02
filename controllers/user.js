@@ -17,13 +17,15 @@ async function userRegistrationPage(req, res) {
     return res.render("home");
 }
 
+async function userLoginPage(req, res) {
+    return res.render("login")
+}
+
 async function handleRegisterUser(req, res) {
     const { userName, email, password, confirmPassword } = req.body;
     try {
         if (!userName || !email || !password) {
             res.status(RESPONSE_CODES.PRECONDITION_FAILED).json({ msg: 'Please provide all the fields.' });
-        } else if (!emailCheck.valid) {
-            res.status(RESPONSE_CODES.PRECONDITION_FAILED).json({ msg: 'Please enter a valid email.' });
         } else if (password != confirmPassword) {
             res.status(RESPONSE_CODES.PRECONDITION_FAILED).json({msg: 'Password and Confirm password must be same.'})
         } else {
@@ -81,6 +83,7 @@ async function handleDeleteUserById(req, res) {
 module.exports = {
     handleRegisterUser,
     userRegistrationPage,
+    userLoginPage,
     handleGetAllUsers,
     handleGetUserById,
     handleUpdateUserById,

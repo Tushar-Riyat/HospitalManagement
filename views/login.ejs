@@ -1,33 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>SignUp Form</title>
+<title>Login Page</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="/jQuery/script.min.js"></script>
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <link rel="stylesheet" href="/styles/style.css" />
+<script src="/scripts/ajaxScript.js" deffer></script>
 </head>
 <body>
 	<!-- main -->
 	<div class="main-w3layouts wrapper">
-		<h1>SignUp For Healthy Lifestyle</h1>
+		<h1>Login into your account</h1>
 		<div class="main-agileinfo style_fix">
 			<div class="agileits-top">
-				<form action="/api/user/register" method="post">
-					<input class="text style_fix" type="text" name="userName" placeholder="Username" required="">
-					<input class="text email style_fix" type="email" name="email" placeholder="Email" required="">
-					<input class="text style_fix" type="password" name="password" placeholder="Password" required="">
-					<input class="text w3lpass style_fix" type="password" name="confirmPassword" placeholder="Confirm Password" required="">
-					<div class="wthree-text">
-						<label class="anim">
-							<input type="checkbox" class="checkbox" required="">
-							<span>I Agree To The Terms & Conditions</span>
-						</label>
-						<div class="clear"> </div>
-					</div>
-					<input class="style_fix" type="submit" value="SIGNUP">
+				<form action="#" method="post">
+					<input class="text style_fix" type="text" id="userName" name="userName" placeholder="Username" required="">
+					<input class="text w3lpass style_fix" id="password" type="password" name="password" placeholder="Password" required="">
+					<input class="style_fix submitButton" type="submit" value="LOGIN">
 				</form>
-				<p>Don't have an Account? <a href="#"> Signup Now!</a></p>
 			</div>
 		</div>
 		<!-- //copyright -->

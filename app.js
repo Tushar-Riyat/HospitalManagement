@@ -1,23 +1,27 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { logReqRes } = require('./middlewares');
 const userRouter = require('./routes/user');
 const { connectMongoDB } = require('./connection');
 
-const PORT = 3000;
-const MONGODB_PORT = 27017;
 const app = express();
 
 // Connecting Mongoose
-connectMongoDB(`mongodb://127.0.0.1:${MONGODB_PORT}/MedEnrollHubDB`);
+connectMongoDB(`mongodb://127.0.0.1:${process.env.DB_PORT}/${process.env.DB_NAME}`);
 
-// Serve static files from the 'public' directory
+// Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve static files from "node_modules"
+app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 // Set EJS as the template engine
 app.set('view engine', 'ejs');
-app.set('views', path.resolve('./views'));
+app.set('views', path.join(__dirname, 'views'));
 
+
+console.log(`my APP_NAME is ${process.env.APP_NAME}`)
 
 // Middleware to parse URL-encoded bodies and JSON
 app.use(express.urlencoded({ extended: false }));
@@ -35,4 +39,4 @@ app.use(logReqRes('logs/log.txt'));
 app.use('/api/user', userRouter);
 
 // Start the server
-app.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}`));
+app.listen(process.env.PORT, () => console.log(`Server started on http://localhost:${process.env.PORT}`));

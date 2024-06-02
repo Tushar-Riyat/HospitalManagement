@@ -14,6 +14,7 @@ const constants = {
 		CONFLICT 				: 409, // The request could not be completed due to a conflict. For example,  POST ContentStore Folder API cannot complete if the given file or folder name already exists in the parent location.
 		PRECONDITION_FAILED 	: 412, // The code indicates that those preconditions were not met
 		INTERNAL_SERVER_ERROR   : 500, // The request was not completed due to an internal error on the server side.
+		NOT_IMPLEMENTED			: 501, // The server does not support the functionality required to fulfill the request.
 		SERVICE_UNAVAILABLE 	: 503, // The server was unavailable.
 		GATEWAY_TIMEOUT 		: 504, // The server was acting as a gateway or proxy and did not receive a timely response from the upstream server.
 		INSUFFICIENT_STORAGE 	: 507, // The server is unable to store the representation needed to complete the request.
