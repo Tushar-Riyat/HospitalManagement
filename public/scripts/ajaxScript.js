@@ -4,14 +4,14 @@ $(document).ready(function () {
         e.preventDefault();
         let userName = $('#userName').val();
         let password = $('#password').val();
-
         $.ajax({
             type: 'POST',
-            url: '/api/user/login',  // Replace with your actual login URL
+            url: '/api/user/login',
             data: { userName: userName, password: password },
             success: function (response, textStatus, jqXHR) {
                 if (jqXHR.status === 200) {
-                    alert('Login successful!');
+                    console.log('testing ajax');
+                    window.location.href = response.redirectURL;
                 } else {
                     $('#password').addClass('vibrate');
                     setTimeout(function () {

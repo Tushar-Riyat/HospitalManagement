@@ -19,10 +19,33 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['male', 'female']
   },
+  role: {
+    type: String,
+    enum: ['patient', 'doctor', 'superAdmin'],
+    required: true
+  },
   password: {
     type: String,
     required: true
   }
+}, {
+  timestamps: true
+});
+
+const groupSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  admin: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  patients: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }]
 }, {
   timestamps: true
 });
@@ -45,4 +68,5 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 const User = mongoose.model('user', userSchema);
-module.exports = User;
+const Group = mongoose.model('group', groupSchema);
+module.exports = {User, Group};

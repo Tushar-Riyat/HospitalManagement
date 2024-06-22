@@ -8,9 +8,13 @@
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <link rel="stylesheet" href="/styles/style.css" />
 <script src="/scripts/ajaxScript.js" deffer></script>
+<!-- <style>
+	.loading-indicator {
+            display: none;
+    }
+</style> -->
 </head>
 <body>
-	<!-- main -->
 	<div class="main-w3layouts wrapper">
 		<h1>Login into your account</h1>
 		<div class="main-agileinfo style_fix">
@@ -20,9 +24,9 @@
 					<input class="text w3lpass style_fix" id="password" type="password" name="password" placeholder="Password" required="">
 					<input class="style_fix submitButton" type="submit" value="LOGIN">
 				</form>
+				<p>Don't have an Account? <a href="/api/user/registerPage" class="load_ajax"> Signup Now!</a></p>
 			</div>
 		</div>
-		<!-- //copyright -->
 		<ul class="colorlib-bubbles">
 			<li></li>
 			<li></li>
@@ -44,7 +48,10 @@
 			<li></li>
 			<li></li>
 		</ul>
-	</div>
-	<!-- //main -->
+	<!-- </div>
+	<div class="loading-indicator">Loading...</div> -->
 </body>
 </html>
+<!-- <script src="/jQuery/script.min.js"></script>
+<script src="/Modernizr/modernizr.min.js"></script>
+<script src="/scripts/spa.js"></script> -->

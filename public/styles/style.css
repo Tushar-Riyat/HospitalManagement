@@ -794,3 +794,6 @@ input.checkbox:checked:after {
   animation: shake 0.35s;
   border: 1px solid red;
 }
+.loading-indicator {
+  display: none;
+}

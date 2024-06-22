@@ -8,7 +8,7 @@ const { connectMongoDB } = require('./connection');
 const app = express();
 
 // Connecting Mongoose
-connectMongoDB(`mongodb://127.0.0.1:${process.env.DB_PORT}/${process.env.DB_NAME}`);
+connectMongoDB(`${process.env.DB_URL}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
 
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
