@@ -16,7 +16,7 @@ async function authLogin(req, res) {
         }
         const sessionID = uuidv4();
         setUser(sessionID, user);
-        res.cookie('uuid', sessionID);
+        res.cookie('uid', sessionID);
         return res.status(RESPONSE_CODES.OK).json({msg: 'Login Successful.', redirectURL:'/api/user/profilePage'});
     } catch (err) {
         return res.status(RESPONSE_CODES.BAD_REQUEST).json({msg: "Something went wrong.", err: err})
