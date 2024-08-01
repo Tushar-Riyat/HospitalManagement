@@ -4,20 +4,20 @@ module.exports = {
         password: 'root',
         database: 'HospitalManagementDB',
         host: '127.0.0.1',
-        dialect: 'postgres'
+        dialect: 'mysql'
     },
     test : {
         username: 'root',
         password: 'root',
         database: 'HospitalManagementDB',
         host: '127.0.0.1',
-        dialect: 'postgres'
+        dialect: 'mysql'
     },
     production : {
         username: 'root',
         password: 'root',
         database: 'HospitalManagementDB',
         host: '127.0.0.1',
-        dialect: 'postgres'
+        dialect: 'mysql'
     },
 }
