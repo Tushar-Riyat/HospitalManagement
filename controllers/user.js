@@ -1,4 +1,6 @@
 const {User, Group} = require('../models/user');
+const { Op } = require('sequelize');
+const {Patients, Doctors, MedicalExamination, Appointments} = require('../DatabaseDesign/models/index');
 const emailValidator = require('emailvalid');
 const EmailValidation = new emailValidator();
 const RESPONSE_CODES = require('../config/constants.js');
@@ -25,7 +27,7 @@ async function userProfilePage(req, res) {
     return res.render('profile');
 }
 
-async function handleRegisterUser(req, res) {
+async function handleRegisterUserMongoDB(req, res) {
     const { userName, email, password, confirmPassword, role } = req.body;
     try {
         if (!userName || !email || !password) {
@@ -47,6 +49,114 @@ async function handleRegisterUser(req, res) {
         res.status(RESPONSE_CODES.INTERNAL_SERVER_ERROR).json({ msg: `Internal Server Error with error ${err}.` });
     }
     return res;
+}
+
+async function handleRegisterPatient(req, res) {
+    const { name, email, password, confirmPassword, gender, appointmentDate, appointmentTime, doctorId } = req.body;
+
+    try {
+        if (!name || !email || !password) {
+            return res.status(RESPONSE_CODES.PRECONDITION_FAILED).json({ msg: 'Please provide all the fields.' });
+        } else if (password !== confirmPassword) {
+            return res.status(RESPONSE_CODES.PRECONDITION_FAILED).json({ msg: 'Password and Confirm password must be the same.' });
+        }
+
+        const existingPatient = await Patients.findOne({ where: { email } });
+        if (existingPatient) {
+            return res.status(RESPONSE_CODES.BAD_REQUEST).json({ msg: 'Email already exists.' });
+        }
+
+        // Create a new patient
+        const newPatient = await Patients.create({ name, email, password, gender });
+
+        // Schedule an appointment
+        const doctor = await Doctors.findByPk(doctorId);
+        if (!doctor) {
+            return res.status(RESPONSE_CODES.BAD_REQUEST).json({ msg: 'Invalid doctor ID.' });
+        }
+
+        // Define working hours and appointment duration
+        const workingHoursStart = 9;
+        const workingHoursEnd = 17;
+        const appointmentDuration = 1; // 1 hour
+
+        // Helper function to find the next available slot
+        async function findNextAvailableSlot(doctorId, date) {
+            for (let hour = workingHoursStart; hour < workingHoursEnd; hour++) {
+                const startTime = new Date(date);
+                startTime.setHours(hour, 0, 0, 0);
+
+                const endTime = new Date(startTime);
+                endTime.setHours(hour + appointmentDuration, 0, 0, 0);
+
+                const appointmentExists = await Appointments.findOne({
+                    where: {
+                        doctorId,
+                        appointmentDate: startTime,
+                        appointmentTime: { [Op.between]: [startTime, endTime] },
+                    },
+                });
+
+                if (!appointmentExists) {
+                    return startTime;
+                }
+            }
+
+            // No slot available, return next day
+            const nextDay = new Date(date);
+            nextDay.setDate(nextDay.getDate() + 1);
+            return findNextAvailableSlot(doctorId, nextDay);
+        }
+
+        let appointmentSlot;
+
+        if (appointmentDate && appointmentTime) {
+            const requestedDate = new Date(appointmentDate);
+            const requestedTime = new Date(appointmentTime);
+
+            requestedDate.setHours(requestedTime.getHours(), requestedTime.getMinutes(), 0, 0);
+
+            const startTime = new Date(requestedDate);
+            const endTime = new Date(startTime);
+            endTime.setHours(endTime.getHours() + appointmentDuration);
+
+            const appointmentExists = await Appointments.findOne({
+                where: {
+                    doctorId,
+                    appointmentDate: requestedDate,
+                    appointmentTime: { [Op.between]: [startTime, endTime] },
+                },
+            });
+
+            if (appointmentExists) {
+                // Find the closest available slot
+                appointmentSlot = await findNextAvailableSlot(doctorId, requestedDate);
+            } else {
+                appointmentSlot = startTime;
+            }
+        } else {
+            // Find the earliest available slot starting from today
+            appointmentSlot = await findNextAvailableSlot(doctorId, new Date());
+        }
+
+        // Create the appointment
+        const newAppointment = await Appointments.create({
+            patients_id: newPatient.id,
+            doctors_id: doctorId,
+            appointment_date: appointmentSlot,
+            appointment_time: appointmentSlot,
+        });
+
+        res.status(RESPONSE_CODES.CREATED).json({ 
+            msg: 'User created successfully and appointment scheduled.', 
+            user: newPatient, 
+            appointment: newAppointment 
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(RESPONSE_CODES.INTERNAL_SERVER_ERROR).json({ msg: `Internal Server Error with error ${err}.` });
+    }
 }
 
 async function handleGetUserById(req, res) {
@@ -133,7 +243,7 @@ async function addPatientToGroup(req, res) {
 }
 
 module.exports = {
-    handleRegisterUser,
+    handleRegisterPatient,
     userRegistrationPage,
     userLoginPage,
     handleGetAllUsers,

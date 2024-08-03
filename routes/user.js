@@ -3,7 +3,7 @@ const router = express.Router();
 const {
     handleGetAllUsers,
     handleGetUserById,
-    handleRegisterUser,
+    handleRegisterPatient,
     handleUpdateUserById,
     handleDeleteUserById,
     userRegistrationPage,
@@ -23,7 +23,7 @@ router.get('/list', handleGetAllUsers)
 router.route('/')
     .patch(handleUpdateUserById)
     .delete(handleDeleteUserById);
-router.post('/register', handleRegisterUser)
+router.post('/register', handleRegisterPatient)
     .post('/login', authLogin)
     .post('/id', handleGetUserById)
     .post('/forgotpassword', authForgotPassword)
